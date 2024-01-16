@@ -21,6 +21,7 @@ enum CSRGenerator {
         
         let output = shell.exec("openssl req -new -key \(privateKeyFilename) -out \(csrOutput) -config \(configFilename)")
         Logger.v(output)
+        try? FileManager.default.removeItem(atPath: configFilename)
         // to preview generated SCR, use:
         // openssl req -in ca.cert -noout -text
     }
