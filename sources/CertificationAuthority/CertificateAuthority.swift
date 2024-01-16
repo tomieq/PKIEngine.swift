@@ -8,12 +8,12 @@
 import Foundation
 
 class CertificateAuthority {
-    let caX509Filename: String // might be self-signed
     let caPrivateKeyFilename: String
+    let caX509Filename: String // might be self-signed
     
-    init(caX509Filename: String, caPrivateKeyFilename: String) {
-        self.caX509Filename = caX509Filename
+    init(caPrivateKeyFilename: String, caX509Filename: String) {
         self.caPrivateKeyFilename = caPrivateKeyFilename
+        self.caX509Filename = caX509Filename
     }
     
     // sign certificate without any extensions

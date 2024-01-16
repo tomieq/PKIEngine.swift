@@ -55,8 +55,8 @@ CSRGenerator.generate(using: intermediateInfo,
 
 // process CSR by self-signed root
 
-let rootAuthority = CertificateAuthority(caX509Filename: rootCertFile,
-                                         caPrivateKeyFilename: rootPrivateKey)
+let rootAuthority = CertificateAuthority(caPrivateKeyFilename: rootPrivateKey,
+                                         caX509Filename: rootCertFile)
 // create intermediate x509 certificate
 rootAuthority.processCSRAddingExtensions(csrFilename: intermediateCSRFile,
                                          x509Output: intermediateCertFile,
@@ -90,8 +90,8 @@ CSRGenerator.generate(using: userInfo,
 
 // process CSR by self-signed root
 
-let intermediateAuthority = CertificateAuthority(caX509Filename: intermediateCertFile,
-                                                 caPrivateKeyFilename: intermediatePrivateKey)
+let intermediateAuthority = CertificateAuthority(caPrivateKeyFilename: intermediatePrivateKey,
+                                                 caX509Filename: intermediateCertFile)
 intermediateAuthority.processCSRAddingExtensions(csrFilename: userCSRFile,
                                                  x509Output: userCertFile,
                                                  outputFormat: .pem)
