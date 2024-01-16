@@ -19,8 +19,8 @@ enum CSRGenerator {
         let configFilename = "csr.config"
         CSRConfig.with(info: info, type: type, writeTo: configFilename)
         
-        _ = shell.exec("openssl req -new -key \(privateKeyFilename) -out \(csrOutput) -config \(configFilename)")
-
+        let output = shell.exec("openssl req -new -key \(privateKeyFilename) -out \(csrOutput) -config \(configFilename)")
+        Logger.v(output)
         // to preview generated SCR, use:
         // openssl req -in ca.cert -noout -text
     }

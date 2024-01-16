@@ -42,7 +42,7 @@ let userInfo = CertificateInfo(countryName: "DE",
                              organizationalUnitName: nil,
                              commonName: "desy.de",
                              alternativeNames: ["*.desy.de"])
-CSRGenerator.generate(using: userInfo, type: .endUser, privateKeyFilename: userPrivateKey, csrOutput: csrFile)
+CSRGenerator.generate(using: userInfo, type: .intermediate, privateKeyFilename: userPrivateKey, csrOutput: csrFile)
 
 
 
@@ -54,10 +54,6 @@ certificateAuthority.handleExtendend(csrFilename: csrFile, x509Output: "signed.p
 
 //print(Shell().exec("openssl x509 -in signed.pem -noout -text"))
 
-print("\(X509Certificate(path: caX509Cert)?.prettyPrint ?? "")")
-//let pem = Shell().exec("cat signed.pem")
-//let x509 = X509Certificate(path: "/Users/tomaskuc/tmp/AmazonRootCA1.cer")
+//print("\(X509Certificate(path: caX509Cert)?.prettyPrint ?? "")")
 print("\(X509Certificate(path: "signed.pem")?.prettyPrint ?? "")")
-//print("\(x509?.subjectDistinguishedName)")
-exit(0)
 
