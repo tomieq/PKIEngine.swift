@@ -21,10 +21,10 @@ extension X509Certificate {
             dateFormatter.locale = Locale(identifier: "en_US_POSIX")
             return dateFormatter.string(from: date)
         }
-        var output = "-------------------"
+        var output = "----------- BEGIN PREVIEW -----------"
         let isRoot = subjectDistinguishedName == issuerDistinguishedName
         if isRoot {
-            output.append("\nSelf-signed root certificate")
+            add("Type", "Self-signed root certificate")
         }
         add("Subject Name", subjectDistinguishedName)
         add("Issuer Name", issuerDistinguishedName)
@@ -33,7 +33,15 @@ extension X509Certificate {
         add("Signature algorithm", sigAlgName)
         
         add("Not valid before", format(notBefore))
-        add("Not valid after", format(notAfter))
+        var expirationComment = ""
+        if let expirationDate = notAfter {
+            if expirationDate < Date() {
+                expirationComment = " EXPIRED!"
+            } else {
+                expirationComment = " [will expire in \(Calendar(identifier: .gregorian).numberOfDaysBetween(Date(), and: expirationDate)) days]"
+            }
+        }
+        add("Not valid after", format(notAfter)?.appending(expirationComment))
         add("Extension Key Usage", keyUsage.enumerated().filter{ $0.element }.compactMap{ X509KeyUsage(rawValue: $0.offset)?.name }.joined(separator: ", "))
 
         let extentions = nonCriticalExtensionOIDs + criticalExtensionOIDs
@@ -50,7 +58,7 @@ extension X509Certificate {
                 add("Extension Authority Key Identifier (\($0))", authorityExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(4).joined(separator: " "))
             }
         }
-        output.append("\n-------------------")
+        output.append("\n----------- END PREVIEW -----------")
         return output
     }
 }
