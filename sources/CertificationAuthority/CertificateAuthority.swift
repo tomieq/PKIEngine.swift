@@ -26,9 +26,9 @@ class CertificateAuthority {
     }
     
     // sign certificate without any extensions
-    func handleExtendend(csrFilename: String, x509Output: String) {
+    func handleExtendend(csrFilename: String, x509Output: String, format: CertificateFormat) {
         let shell = Shell()
-        _ = shell.exec("openssl x509 -req  -in \(csrFilename) -CA \(caX509Filename) -CAkey \(caPrivateKeyFilename) -copy_extensions=copyall -out \(x509Output)")
+        _ = shell.exec("openssl x509 -req  -in \(csrFilename) -CA \(caX509Filename) -CAkey \(caPrivateKeyFilename) -copy_extensions=copyall -out \(x509Output) \(format.opensslArg)")
         // to preview generated x509 certificate, call:
         // openssl x509 -in signed.pem -noout -text
     }
