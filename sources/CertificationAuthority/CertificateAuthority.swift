@@ -20,7 +20,7 @@ class CertificateAuthority {
     func handle(csrFilename: String, x509Output: String, format: CertificateFormat) {
         let shell = Shell()
         _ = shell.exec("rm \(x509Output)")
-        let output = shell.exec("openssl x509 -req -days 90 -in \(csrFilename) -CA \(caX509Filename) -CAkey \(caPrivateKeyFilename) -out \(x509Output) -sha256 -CAcreateserial")
+        let output = shell.exec("openssl x509 -req -days 90 -in \(csrFilename) -CA \(caX509Filename) -CAkey \(caPrivateKeyFilename) -out \(x509Output) -sha256")
         print(output)
         // to preview generated x509 certificate, call:
         // openssl x509 -in signed.pem -noout -text
@@ -30,7 +30,7 @@ class CertificateAuthority {
     func handleExtendend(csrFilename: String, x509Output: String, format: CertificateFormat) {
         let shell = Shell()
         _ = shell.exec("rm \(x509Output)")
-        let output = shell.exec("openssl x509 -req  -in \(csrFilename) -CA \(caX509Filename) -CAkey \(caPrivateKeyFilename) -copy_extensions=copyall -out \(x509Output) \(format.opensslArg) -CAcreateserial")
+        let output = shell.exec("openssl x509 -req  -in \(csrFilename) -CA \(caX509Filename) -CAkey \(caPrivateKeyFilename) -copy_extensions=copyall -out \(x509Output) \(format.opensslArg)")
         print(output)
         // to preview generated x509 certificate, call:
         // openssl x509 -in signed.pem -noout -text
