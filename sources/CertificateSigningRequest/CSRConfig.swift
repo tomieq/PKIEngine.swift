@@ -8,8 +8,8 @@
 import Foundation
 
 enum CSRType {
+    case intermediate
     case endUser
-    case certificationAuthority
 }
 
 enum CSRConfig {
@@ -50,21 +50,22 @@ enum CSRConfig {
         add("[ v3_req ]")
         // basic constraints extension tells whether certificate can be used to sign othet certificates
         switch type {
-        case .certificationAuthority:
+        case .intermediate:
             // The pathlen parameter specifies the maximum number of CAs that can appear below this one in a chain.
             // A pathlen of zero means the CA cannot sign any sub-CA's, and can only sign end-entity certificates.
             add("basicConstraints=CA:TRUE, pathlen:0")
+            add("keyUsage = critical, digitalSignature, keyCertSign, cRLSign")
         case .endUser:
             add("basicConstraints=CA:FALSE")
+            // Key usage is a multi-valued extension consisting of a list of names of the permitted key usages.
+            // The defined values are: digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement,
+            // keyCertSign, cRLSign, encipherOnly, and decipherOnly.
+            add("keyUsage = nonRepudiation, digitalSignature, keyEncipherment, dataEncipherment")
         }
         if !info.alternativeNames.isEmpty {
             add("subjectAltName=@my_subject_alt_names")
         }
         add("subjectKeyIdentifier = hash")
-        // Key usage is a multi-valued extension consisting of a list of names of the permitted key usages.
-        // The defined values are: digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement,
-        // keyCertSign, cRLSign, encipherOnly, and decipherOnly.
-        add("keyUsage = nonRepudiation, digitalSignature, keyEncipherment, dataEncipherment")
         /*
          This extension consists of a list of values indicating purposes for which the certificate public key can be used. Each value can be either a short text name or an OID. The following text names, and their intended meaning, are known:
 

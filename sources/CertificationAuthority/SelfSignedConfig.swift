@@ -45,7 +45,7 @@ enum SelfSignedConfig {
 
         // The pathlen parameter specifies the maximum number of CAs that can appear below this one in a chain.
         // A pathlen of zero means the CA cannot sign any sub-CA's, and can only sign end-entity certificates.
-        add("basicConstraints=critical, CA:TRUE, pathlen:0")
+        add("basicConstraints=critical, CA:TRUE, pathlen:2")
 
         add("subjectKeyIdentifier = hash")
         // Key usage is a multi-valued extension consisting of a list of names of the permitted key usages.
