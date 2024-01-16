@@ -15,7 +15,7 @@ enum ECCKeyPairGenerator {
                          publicKeyFormat: CertificateFormat) {
         let shell = Shell()
         Logger.v("Generating elliptic curve private(\(privateKeyFilename)) and public key(\(publicKeyFilename))...")
-        _ = shell.exec("openssl ecparam -name prime256v1 -genkey -noout -out \(privateKeyFilename)")
-        _ = shell.exec("openssl ec -in \(privateKeyFilename) -pubout -out \(publicKeyFilename) \(publicKeyFormat.opensslArg)")
+        shell.exec("openssl ecparam -name prime256v1 -genkey -noout -out \(privateKeyFilename)")
+        shell.exec("openssl ec -in \(privateKeyFilename) -pubout -out \(publicKeyFilename) \(publicKeyFormat.opensslArg)")
     }
 }
