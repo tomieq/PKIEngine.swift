@@ -14,14 +14,14 @@ KeyPairGenerator.generate(privateKeyFilename: rootPrivateKey,
                           publicKeyFormat: .pem)
 
 // Generate self-signed x509 certificate
-let caInfo = CertificateInfo(countryName: "PL",
-                             stateOrProvinceName: "lodzkie",
-                             localityName: "Lodz",
-                             organizationName: "SmartCode",
-                             organizationalUnitName: nil,
-                             commonName: "SmartCode Root CA 5",
-                             alternativeNames: [])
-SelfSignedCertGenerator.generate(using: caInfo,
+let rootInfo = CertificateInfo(countryName: "PL",
+                               stateOrProvinceName: "lodzkie",
+                               localityName: "Lodz",
+                               organizationName: "SmartCode",
+                               organizationalUnitName: nil,
+                               commonName: "SmartCode Root CA 5",
+                               alternativeNames: [])
+SelfSignedCertGenerator.generate(using: rootInfo,
                                  privateKeyFilename: rootPrivateKey,
                                  x509Output: rootCertFile,
                                  outputFormat: .pem)
@@ -34,18 +34,18 @@ let intermediatePublicKey = "intermediate.pub.key"
 let intermediateCSRFile = "intermediate_csr.cer"
 let intermediateCertFile = "intermediate_cert.pem"
 
-KeyPairGenerator.generate(privateKeyFilename: intermediatePrivateKey, 
-                          publicKeyFilename: intermediatePublicKey,
-                          publicKeyFormat: .pem)
+ECCKeyPairGenerator.generate(privateKeyFilename: intermediatePrivateKey,
+                             publicKeyFilename: intermediatePublicKey,
+                             publicKeyFormat: .pem)
 
 // Generate Certificate Signing Request
 let intermediateInfo = CertificateInfo(countryName: "ES",
-                             stateOrProvinceName: "Alicante",
-                             localityName: "Doridorm",
-                             organizationName: "Beach",
-                             organizationalUnitName: nil,
-                             commonName: "Alicante Intermediate M01",
-                             alternativeNames: [])
+                                       stateOrProvinceName: "Alicante",
+                                       localityName: "Doridorm",
+                                       organizationName: "Beach",
+                                       organizationalUnitName: nil,
+                                       commonName: "Alicante Intermediate M01",
+                                       alternativeNames: [])
 CSRGenerator.generate(using: intermediateInfo, 
                       type: .intermediate,
                       privateKeyFilename: intermediatePrivateKey,
@@ -58,9 +58,9 @@ CSRGenerator.generate(using: intermediateInfo,
 let rootAuthority = CertificateAuthority(caX509Filename: rootCertFile,
                                          caPrivateKeyFilename: rootPrivateKey)
 // create intermediate x509 certificate
-rootAuthority.handleExtendend(csrFilename: intermediateCSRFile,
-                              x509Output: intermediateCertFile,
-                              outputFormat: .pem)
+rootAuthority.processCSRAddingExtensions(csrFilename: intermediateCSRFile,
+                                         x509Output: intermediateCertFile,
+                                         outputFormat: .pem)
 
 
 // ------ end user cert
@@ -92,13 +92,14 @@ CSRGenerator.generate(using: userInfo,
 
 let intermediateAuthority = CertificateAuthority(caX509Filename: intermediateCertFile,
                                                  caPrivateKeyFilename: intermediatePrivateKey)
-intermediateAuthority.handleExtendend(csrFilename: userCSRFile,
-                                      x509Output: userCertFile,
-                                      outputFormat: .pem)
+intermediateAuthority.processCSRAddingExtensions(csrFilename: userCSRFile,
+                                                 x509Output: userCertFile,
+                                                 outputFormat: .pem)
 
 //print(Shell().exec("openssl x509 -in signed.pem -noout -text"))
 
 
+print("\(X509Certificate(path: rootCertFile)?.prettyPrint ?? "")")
 print("\(X509Certificate(path: intermediateCertFile)?.prettyPrint ?? "")")
 print("\(X509Certificate(path: userCertFile)?.prettyPrint ?? "")")
 

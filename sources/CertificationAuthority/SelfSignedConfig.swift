@@ -16,7 +16,7 @@ enum SelfSignedConfig {
             config.append("\n\(txt)")
         }
         // This option specifies the digest algorithm to use. Possible values include md5 sha1 mdc2
-        add("default_md = sha1")
+        add("default_md = sha256")
         // if set to the value no this disables prompting of certificate fields and just takes
         // values from the config file directly
         add("prompt = no")
