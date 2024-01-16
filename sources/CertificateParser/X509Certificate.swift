@@ -33,6 +33,13 @@ public class X509Certificate: CustomStringConvertible {
         }
     }
 
+    public convenience init?(path: String) {
+        guard let data = try? Data(contentsOf: URL(fileURLWithPath: path)) else {
+            return nil
+        }
+        try? self.init(data: data)
+    }
+
     public init(der: Data) throws {
         asn1 = try ASN1DERDecoder.decode(data: der)
         guard asn1.count > 0,
