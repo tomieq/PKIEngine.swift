@@ -17,9 +17,9 @@ KeyPairGenerator.generate(privateKeyFilename: rootPrivateKey,
 let rootInfo = CertificateInfo(countryName: "PL",
                                stateOrProvinceName: "lodzkie",
                                localityName: "Lodz",
-                               organizationName: "SmartCode",
+                               organizationName: "Certificate Root IT Company",
                                organizationalUnitName: nil,
-                               commonName: "SmartCode Root CA 5",
+                               commonName: "IT Root CA 1",
                                alternativeNames: [])
 SelfSignedCertGenerator.generate(using: rootInfo,
                                  privateKeyFilename: rootPrivateKey,
@@ -39,12 +39,12 @@ ECCKeyPairGenerator.generate(privateKeyFilename: intermediatePrivateKey,
                              publicKeyFormat: .pem)
 
 // Generate Certificate Signing Request
-let intermediateInfo = CertificateInfo(countryName: "ES",
-                                       stateOrProvinceName: "Alicante",
-                                       localityName: "Doridorm",
-                                       organizationName: "Beach",
+let intermediateInfo = CertificateInfo(countryName: "EN",
+                                       stateOrProvinceName: "British",
+                                       localityName: "London",
+                                       organizationName: "Certificate Seller Company",
                                        organizationalUnitName: nil,
-                                       commonName: "Alicante Intermediate M01",
+                                       commonName: "Intermediate M01",
                                        alternativeNames: [])
 CSRGenerator.generate(using: intermediateInfo, 
                       type: .intermediate,
@@ -71,16 +71,16 @@ let userCertFile = "user_cert.pem"
 
 KeyPairGenerator.generate(privateKeyFilename: userPrivateKey, 
                           publicKeyFilename: userPublicKey,
-                          publicKeyFormat: .pem)
+                          publicKeyFormat: .der)
 
 // Generate Certificate Signing Request
 let userInfo = CertificateInfo(countryName: "DE",
                              stateOrProvinceName: "Central Germany",
                              localityName: "Berlin",
-                             organizationName: "DESY",
+                             organizationName: "German Research Center",
                              organizationalUnitName: nil,
-                             commonName: "desy.de",
-                             alternativeNames: ["*.desy.de"])
+                             commonName: "research.com",
+                             alternativeNames: ["*.research.com"])
 CSRGenerator.generate(using: userInfo,
                       type: .endUser,
                       privateKeyFilename: userPrivateKey,
@@ -95,8 +95,6 @@ let intermediateAuthority = CertificateAuthority(caPrivateKeyFilename: intermedi
 intermediateAuthority.processCSRAddingExtensions(csrFilename: userCSRFile,
                                                  x509Output: userCertFile,
                                                  outputFormat: .pem)
-
-//print(Shell().exec("openssl x509 -in signed.pem -noout -text"))
 
 
 print("\(X509Certificate(path: rootCertFile)?.prettyPrint ?? "")")
