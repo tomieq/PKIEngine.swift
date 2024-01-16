@@ -83,7 +83,9 @@ enum CSRConfig {
          msCTLSign              Microsoft Trust List Signing
          msEFS                  Microsoft Encrypted File System
          */
-        add("extendedKeyUsage = clientAuth, serverAuth") // , 1.2.3.4
+        if type == .endUser {
+            add("extendedKeyUsage = clientAuth, serverAuth") // , 1.2.3.4
+        }
         
         // put in the X509 the issuer's keyID and name - always, ever for self-signed certificate
         //add("authorityKeyIdentifier = keyid, issuer:always")

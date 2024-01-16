@@ -42,20 +42,25 @@ extension X509Certificate {
             }
         }
         add("Not valid after", format(notAfter)?.appending(expirationComment))
-        add("Extension Key Usage", keyUsage.enumerated().filter{ $0.element }.compactMap{ X509KeyUsage(rawValue: $0.offset)?.name }.joined(separator: ", "))
-
+        if !subjectAlternativeNames.isEmpty {
+            add("[Extension] Alternative names", subjectAlternativeNames.joined(separator: ", "))
+        }
+        add("[Extension] Key Usage", keyUsage.enumerated().filter{ $0.element }.compactMap{ X509KeyUsage(rawValue: $0.offset)?.name }.joined(separator: ", "))
+        if !extendedKeyUsage.isEmpty {
+            add("[Extension] Extended Key Usage", extendedKeyUsage.compactMap { OID.description(of: $0)?.appending(" (\($0))") }.joined(separator: "\n\t"))
+        }
         let extentions = nonCriticalExtensionOIDs + criticalExtensionOIDs
         extentions.forEach {
             let extensionObject = extensionObject(oid: $0)
             if let basic = extensionObject as? BasicConstraintExtension {
-                add("Extension Certificate Authority (\($0))", basic.isCA)
+                add("[Extension] Certificate Authority (\($0))", basic.isCA)
             }
             if let subjectExtension = extensionObject as? SubjectKeyIdentifierExtension {
-                add("Extension Subject Key Identifier (\($0))", subjectExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(2).joined(separator: " "))
+                add("[Extension] Subject Key Identifier (\($0))", subjectExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(2).joined(separator: " "))
             }
             
             if !isRoot,  let authorityExtension = extensionObject as? AuthorityKeyIdentifierExtension {
-                add("Extension Authority Key Identifier (\($0))", authorityExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(4).joined(separator: " "))
+                add("[Extension] Authority Key Identifier (\($0))", authorityExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(4).joined(separator: " "))
             }
         }
         output.append("\n----------- END PREVIEW -----------")
