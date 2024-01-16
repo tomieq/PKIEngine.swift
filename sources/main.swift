@@ -24,7 +24,7 @@ let caInfo = CertificateInfo(countryName: "PL",
 SelfSignedCertGenerator.generate(using: caInfo,
                                  privateKeyFilename: rootPrivateKey,
                                  x509Output: rootCertFile,
-                                 format: .pem)
+                                 outputFormat: .pem)
 
 Logger.v("CA x509 file: \(pwd)/\(rootCertFile)")
 
@@ -60,7 +60,7 @@ let rootAuthority = CertificateAuthority(caX509Filename: rootCertFile,
 // create intermediate x509 certificate
 rootAuthority.handleExtendend(csrFilename: intermediateCSRFile,
                               x509Output: intermediateCertFile,
-                              format: .pem)
+                              outputFormat: .pem)
 
 
 // ------ end user cert
@@ -94,7 +94,7 @@ let intermediateAuthority = CertificateAuthority(caX509Filename: intermediateCer
                                                  caPrivateKeyFilename: intermediatePrivateKey)
 intermediateAuthority.handleExtendend(csrFilename: userCSRFile,
                                       x509Output: userCertFile,
-                                      format: .pem)
+                                      outputFormat: .pem)
 
 //print(Shell().exec("openssl x509 -in signed.pem -noout -text"))
 

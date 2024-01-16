@@ -13,7 +13,7 @@ enum SelfSignedCertGenerator {
     static func generate(using info: CertificateInfo,
                          privateKeyFilename: String,
                          x509Output: String,
-                         format: CertificateFormat) {
+                         outputFormat format: CertificateFormat) {
         Logger.v("Generating self-signed x509 certificate(\(x509Output))...")
         let shell = Shell()
         let configFilename = "selfSigned.".appendingRandomHexDigits(length: 12) + ".config"
