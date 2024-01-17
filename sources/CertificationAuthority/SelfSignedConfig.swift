@@ -31,10 +31,22 @@ enum SelfSignedConfig {
         
         // Leave as long names as it helps documentation
         add("[ req_distinguished_name ]")
-        add("countryName = \(info.countryName)") // C
-        add("stateOrProvinceName = \(info.stateOrProvinceName)") // ST
-        add("localityName = \(info.localityName)") // L
-        add("organizationName = \(info.organizationName)") // O
+        // Leave as long names as it helps documentation
+        if let countryName = info.countryName {
+            add("countryName = \(countryName)") // C
+        }
+        if let stateOrProvinceName = info.stateOrProvinceName {
+            add("stateOrProvinceName = \(stateOrProvinceName)") // ST
+        }
+        if let localityName = info.localityName {
+            add("localityName = \(localityName)") // L
+        }
+        if let organizationName = info.organizationName {
+            add("organizationName = \(organizationName)") // O
+        }
+        if let organizationalUnitName = info.organizationalUnitName {
+            add("organizationalUnitName = \(organizationalUnitName)") // OU
+        }
         //add("organizationalUnitName = SmartCode Certificate Authority") // OU
         add("commonName = \(info.commonName)") // CN
         //add("emailAddress = admin@smartcode.com")

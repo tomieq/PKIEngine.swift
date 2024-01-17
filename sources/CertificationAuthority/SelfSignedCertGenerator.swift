@@ -18,7 +18,8 @@ enum SelfSignedCertGenerator {
         let shell = Shell()
         let configFilename = "selfSigned.".appendingRandomHexDigits(length: 12) + ".config"
         SelfSignedConfig.with(info: info, writeTo: configFilename)
-        _ = shell.exec("openssl req -new -x509 -key \(privateKeyFilename) -out \(x509Output) \(format.opensslArg) -days 3650 -config \(configFilename)")
+        let output = shell.exec("openssl req -new -x509 -key \(privateKeyFilename) -out \(x509Output) \(format.opensslArg) -days 3650 -config \(configFilename)")
+        print(output)
         try? FileManager.default.removeItem(atPath: configFilename)
         // to preview generated x509 certificate, call:
         // openssl x509 -in ca.pem -noout -text

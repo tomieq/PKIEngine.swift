@@ -58,7 +58,6 @@ extension X509Certificate {
             if let subjectExtension = extensionObject as? SubjectKeyIdentifierExtension {
                 add("[Extension] Subject Key Identifier (\($0))", subjectExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(2).joined(separator: " "))
             }
-            
             if !isRoot,  let authorityExtension = extensionObject as? AuthorityKeyIdentifierExtension {
                 add("[Extension] Authority Key Identifier (\($0))", authorityExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(4).joined(separator: " "))
             }
