@@ -54,15 +54,14 @@ KeyPairGenerator.generate(privateKeyFilename: rootPrivateKey,
 let rootInfo = CertificateInfo(countryName: "PL",
                                stateOrProvinceName: "lodzkie",
                                localityName: "Lodz",
-                               organizationName: "Certificate Root IT Company",
-                               organizationalUnitName: nil,
-                               commonName: "IT Root CA 1",
-                               alternativeNames: [])
+                               organizationName: "Certificate Root IT Company",,
+                               commonName: "IT Root CA 1")
 // Generate self-signed x509 certificate
 SelfSignedCertGenerator.generate(using: rootInfo,
                                  privateKeyFilename: rootPrivateKey,
                                  x509Output: rootCertFile,
-                                 outputFormat: .pem)
+                                 outputFormat: .pem,
+                                 expiration: .years(10))
 // create CertificateAuthority instance needed for further processing CSRs
 let rootAuthority = CertificateAuthority(caPrivateKeyFilename: rootPrivateKey,
                                          caX509Filename: rootCertFile)
@@ -81,13 +80,8 @@ ECCKeyPairGenerator.generate(privateKeyFilename: intermediatePrivateKey,
                              publicKeyFormat: .pem)
 
 // prepare data for Certificate Signing Request
-let intermediateInfo = CertificateInfo(countryName: "EN",
-                                       stateOrProvinceName: "British",
-                                       localityName: "London",
-                                       organizationName: "Certificate Seller Company",
-                                       organizationalUnitName: nil,
-                                       commonName: "Intermediate M01",
-                                       alternativeNames: [])
+let intermediateInfo = CertificateInfo(organizationName: "Certificate Seller Company",
+                                       commonName: "Intermediate M01")
 // generate Certificate Signing Request
 CSRGenerator.generate(using: intermediateInfo, 
                       type: .intermediate,
@@ -96,7 +90,8 @@ CSRGenerator.generate(using: intermediateInfo,
 // create intermediate x509 certificate
 rootAuthority.processCSRAddingExtensions(csrFilename: intermediateCSRFile,
                                          x509Output: intermediateCertFile,
-                                         outputFormat: .pem)
+                                         outputFormat: .pem,
+                                         expiration: .years(3))
 // create CertificateAuthority instance used later for processing end user CSRs
 let intermediateAuthority = CertificateAuthority(caPrivateKeyFilename: intermediatePrivateKey,
                                                  caX509Filename: intermediateCertFile)
@@ -119,9 +114,8 @@ let userInfo = CertificateInfo(countryName: "DE",
                              stateOrProvinceName: "Central Germany",
                              localityName: "Berlin",
                              organizationName: "German Research Center",
-                             organizationalUnitName: nil,
                              commonName: "research.com",
-                             alternativeNames: ["*.research.com"])
+                             alternativeNames: ["research.com", "*.research.com"])
 // generate Certificate Signing Request
 CSRGenerator.generate(using: userInfo,
                       type: .endUser,
@@ -130,5 +124,6 @@ CSRGenerator.generate(using: userInfo,
 // use intermediate authority to process CSR
 intermediateAuthority.processCSRAddingExtensions(csrFilename: userCSRFile,
                                                  x509Output: userCertFile,
-                                                 outputFormat: .pem)
+                                                 outputFormat: .pem,
+                                                 expiration: .months(6))
 ```
