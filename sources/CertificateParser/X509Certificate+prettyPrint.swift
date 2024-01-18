@@ -49,18 +49,14 @@ extension X509Certificate {
         if !extendedKeyUsage.isEmpty {
             add("[Extension] Extended Key Usage", extendedKeyUsage.compactMap { OID.description(of: $0)?.appending(" (\($0))") }.joined(separator: "\n\t"))
         }
-        let extentions = nonCriticalExtensionOIDs + criticalExtensionOIDs
-        extentions.forEach {
-            let extensionObject = extensionObject(oid: $0)
-            if let basic = extensionObject as? BasicConstraintExtension {
-                add("[Extension] Certificate Authority (\($0))", basic.isCA)
-            }
-            if let subjectExtension = extensionObject as? SubjectKeyIdentifierExtension {
-                add("[Extension] Subject Key Identifier (\($0))", subjectExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(2).joined(separator: " "))
-            }
-            if !isRoot,  let authorityExtension = extensionObject as? AuthorityKeyIdentifierExtension {
-                add("[Extension] Authority Key Identifier (\($0))", authorityExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(4).joined(separator: " "))
-            }
+        if let basic = extensionObject(oid: .basicConstraints) as? BasicConstraintExtension {
+            add("[Extension] Certificate Authority", basic.isCA)
+        }
+        if let subjectExtension = self.extensionObject(oid: .subjectKeyIdentifier) {
+            add("[Extension] Subject Key Identifier", subjectExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(2).joined(separator: " "))
+        }
+        if !isRoot, let authorityExtension = self.extensionObject(oid: .authorityKeyIdentifier) {
+            add("[Extension] Authority Key Identifier", authorityExtension.valueAsBlock?.rawValue?.hexString.chunked(by: 2).dropFirst(4).joined(separator: " "))
         }
         output.append("\n----------- END PREVIEW -----------")
         return output

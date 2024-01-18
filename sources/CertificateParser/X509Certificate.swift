@@ -15,14 +15,14 @@ public class X509Certificate: CustomStringConvertible {
     private static let endPemBlock = "-----END CERTIFICATE-----"
 
     enum X509BlockPosition: Int {
-        case version = 0
-        case serialNumber = 1
-        case signatureAlg = 2
-        case issuer = 3
-        case dateValidity = 4
-        case subject = 5
-        case publicKey = 6
-        case extensions = 7
+        case version
+        case serialNumber
+        case signatureAlg
+        case issuer
+        case dateValidity
+        case subject
+        case publicKey
+        case extensions
     }
 
     public convenience init(data: Data) throws {
@@ -341,12 +341,10 @@ func firstLeafValue(in asn1Object: ASN1Object) -> Any? {
 
 extension ASN1Object {
     subscript(index: X509Certificate.X509BlockPosition) -> ASN1Object? {
-        
-        guard let children = children else { return nil }
+        guard let children = self.children else { return nil }
         if children.count <= 6 {
-            return child(index.rawValue - 1)
-        } else {
-            return child(index.rawValue)
+            return self.child(index.rawValue - 1)
         }
+        return self.child(index.rawValue)
     }
 }
