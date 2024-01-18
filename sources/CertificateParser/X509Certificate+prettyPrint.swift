@@ -31,7 +31,7 @@ extension X509Certificate {
         add("Serial number", serialNumber?.hexString.chunked(by: 2).joined(separator: " "))
         add("Version", version)
         add("Signature algorithm", sigAlgName)
-        
+
         add("Not valid before", format(notBefore))
         var expirationComment = ""
         if let expirationDate = notAfter {

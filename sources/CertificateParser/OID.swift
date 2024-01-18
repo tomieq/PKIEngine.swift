@@ -22,7 +22,7 @@ public enum OID: String {
     case sha256WithRSAEncryption = "1.2.840.113549.1.1.11"
     case md5WithRSAEncryption = "1.2.840.113549.1.1.4"
     case sha1WithRSAEncryption = "1.2.840.113549.1.1.5"
-    
+
     // Digest algorithms
     case sha1 = "1.3.14.3.2.26"
     case pkcsSha256 = "1.3.6.1.4.1.22554.1.2.1"
@@ -31,7 +31,7 @@ public enum OID: String {
     case sha3_256 = "2.16.840.1.101.3.4.2.8"
     case sha3_384 = "2.16.840.1.101.3.4.2.9"
     case md5 = "0.2.262.1.10.1.3.2"
-    
+
     case pkcs7data = "1.2.840.113549.1.7.1"
     case pkcs7signedData = "1.2.840.113549.1.7.2"
     case pkcs7envelopedData = "1.2.840.113549.1.7.3"
@@ -67,7 +67,7 @@ public enum OID: String {
     case authorityKeyIdentifier = "2.5.29.35"
     case extKeyUsage = "2.5.29.37"
     case subjectDirectoryAttributes = "2.5.29.9"
-    
+
     // X.500 attributes
     case commonName = "2.5.4.3"
     case surname = "2.5.4.4"
@@ -82,11 +82,11 @@ public enum OID: String {
     case postalCode = "2.5.4.17"
     case givenName = "2.5.4.42"
     case dnQualifier = "2.5.4.46"
-    
+
     case domainComponent = "0.9.2342.19200300.100.1.25"
 
     case userId = "0.9.2342.19200300.100.1.1"
-    
+
     static func description(of value: String) -> String? {
         guard let oid = OID(rawValue: value) else {
             return nil

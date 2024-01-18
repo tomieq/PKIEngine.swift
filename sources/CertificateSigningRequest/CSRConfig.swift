@@ -13,10 +13,9 @@ enum CSRType {
 }
 
 enum CSRConfig {
-    
     static func with(info: CertificateInfo, type: CSRType, writeTo configFilename: String) {
         var config = "HOME = ."
-        
+
         func add(_ txt: String) {
             config.append("\n\(txt)")
         }
@@ -33,7 +32,7 @@ enum CSRConfig {
         add("distinguished_name = req_distinguished_name")
         // The extensions to add to a certificate request
         add("req_extensions = v3_req")
-        
+
         // Leave as long names as it helps documentation
         add("[ req_distinguished_name ]")
         if let countryName = info.countryName {
@@ -52,8 +51,8 @@ enum CSRConfig {
             add("organizationalUnitName = \(organizationalUnitName)") // OU
         }
         add("commonName = \(info.commonName)") // CN
-        //add("emailAddress = admin@smartcode.com")
-        
+        // add("emailAddress = admin@smartcode.com")
+
         // extensions section
         add("[ v3_req ]")
         // basic constraints extension tells whether certificate can be used to sign othet certificates
@@ -94,10 +93,10 @@ enum CSRConfig {
         if type == .endUser {
             add("extendedKeyUsage = clientAuth, serverAuth") // , 1.2.3.4
         }
-        
+
         // put in the X509 the issuer's keyID and name - always, ever for self-signed certificate
-        //add("authorityKeyIdentifier = keyid, issuer:always")
-        
+        // add("authorityKeyIdentifier = keyid, issuer:always")
+
         // Notice the various DNS names. Since the configuration parser does not allow multiple values
         // for the same name we use the @my_subject_alt_names and DNS.# with different numbers.
         if !info.alternativeNames.isEmpty {
@@ -109,12 +108,12 @@ enum CSRConfig {
 //        add("[ my_subject_alt_names ]")
 //        add("DNS.1 = *.smartcode.com")
 //        add("DNS.2 = .smartcode.pl")
-        
+
         // Certificate Policies
         // This is a raw extension that supports all of the defined fields of the certificate extension.
         // Policies without qualifiers are specified by giving the OID. Multiple policies are comma-separated. For example:
         // add("certificatePolicies = 1.2.4.5, 1.1.3.4")
-        
+
         do {
             try config.write(toFile: configFilename, atomically: false, encoding: .utf8)
         } catch {

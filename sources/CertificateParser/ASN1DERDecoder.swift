@@ -8,58 +8,50 @@
 import Foundation
 
 public class ASN1DERDecoder {
-
     public static func decode(data: Data) throws -> [ASN1Object] {
         var iterator = data.makeIterator()
-        return try parse(iterator: &iterator)
+        return try self.parse(iterator: &iterator)
     }
 
     private static func parse(iterator: inout Data.Iterator) throws -> [ASN1Object] {
-
         var result: [ASN1Object] = []
-        
+
         while let nextValue = iterator.next() {
-
             let asn1obj = ASN1Object()
-            asn1obj.identifier = ASN1Identifier(rawValue: nextValue)
+            asn1obj.type = ASN1Type(rawValue: nextValue)
 
-            if asn1obj.identifier!.isConstructed() {
-
+            if asn1obj.type!.isConstructed() {
                 let contentData = try loadSubContent(iterator: &iterator)
 
                 if contentData.isEmpty {
-                    asn1obj.sub = try parse(iterator: &iterator)
+                    asn1obj.children = try self.parse(iterator: &iterator)
                 } else {
                     var subIterator = contentData.makeIterator()
-                    asn1obj.sub = try parse(iterator: &subIterator)
+                    asn1obj.children = try self.parse(iterator: &subIterator)
                 }
 
                 asn1obj.value = nil
 
                 asn1obj.rawValue = Data(contentData)
 
-                for item in asn1obj.sub! {
+                for item in asn1obj.children! {
                     item.parent = asn1obj
                 }
             } else {
-
-                if asn1obj.identifier!.typeClass() == .universal {
-
+                if asn1obj.type!.typeClass() == .universal {
                     var contentData = try loadSubContent(iterator: &iterator)
 
                     asn1obj.rawValue = Data(contentData)
 
                     // decode the content data with come more convenient format
 
-                    switch asn1obj.identifier!.tagNumber() {
-
+                    switch asn1obj.type!.tag {
                     case .endOfContent:
                         return result
 
                     case .boolean:
                         if let value = contentData.first {
                             asn1obj.value = value > 0 ? true : false
-
                         }
 
                     case .integer:
@@ -72,7 +64,7 @@ public class ASN1DERDecoder {
                         asn1obj.value = nil
 
                     case .objectIdentifier:
-                        asn1obj.value = decodeOid(contentData: &contentData)
+                        asn1obj.value = self.decodeOid(contentData: &contentData)
 
                     case .utf8String,
                          .printableString,
@@ -93,23 +85,23 @@ public class ASN1DERDecoder {
                         asn1obj.value = String(data: contentData, encoding: .ascii)
 
                     case .utcTime:
-                        asn1obj.value = dateFormatter(contentData: &contentData,
-                                                         formats: ["yyMMddHHmmssZ", "yyMMddHHmmZ"])
+                        asn1obj.value = self.dateFormatter(contentData: &contentData,
+                                                           formats: ["yyMMddHHmmssZ", "yyMMddHHmmZ"])
 
                     case .generalizedTime:
-                        asn1obj.value = dateFormatter(contentData: &contentData,
-                                                         formats: ["yyyyMMddHHmmssZ"])
+                        asn1obj.value = self.dateFormatter(contentData: &contentData,
+                                                           formats: ["yyyyMMddHHmmssZ"])
 
                     case .bitString:
                         if contentData.count > 0 {
                             _ = contentData.remove(at: 0) // unused bits
                         }
                         asn1obj.value = contentData
-                    
+
                     case .octetString:
                         do {
                             var subIterator = contentData.makeIterator()
-                            asn1obj.sub = try parse(iterator: &subIterator)
+                            asn1obj.children = try self.parse(iterator: &subIterator)
                         } catch {
                             if let str = String(data: contentData, encoding: .utf8) {
                                 asn1obj.value = str
@@ -119,14 +111,14 @@ public class ASN1DERDecoder {
                         }
 
                     default:
-                        print("unsupported tag: \(asn1obj.identifier!.tagNumber())")
+                        print("unsupported tag: \(asn1obj.type!.tag)")
                         asn1obj.value = contentData
                     }
                 } else {
                     // custom/private tag
 
                     let contentData = try loadSubContent(iterator: &iterator)
-                    asn1obj.rawValue = Data(contentData)
+                    asn1obj.rawValue = contentData
 
                     if let str = String(data: contentData, encoding: .utf8) {
                         asn1obj.value = str
@@ -190,7 +182,7 @@ extension Data {
 
         var value: UInt64 = 0
         for (index, byte) in self.enumerated() {
-            value += UInt64(byte) << UInt64(8*(count-index-1))
+            value += UInt64(byte) << UInt64(8 * (count - index - 1))
         }
         return value
     }
@@ -233,7 +225,6 @@ private func getContentLength(iterator: inout Data.Iterator) -> UInt64 {
 }
 
 private func loadSubContent(iterator: inout Data.Iterator) throws -> Data {
-
     let len = getContentLength(iterator: &iterator)
 
     guard len < Int.max else {
@@ -251,4 +242,5 @@ private func loadSubContent(iterator: inout Data.Iterator) throws -> Data {
     }
     return Data(byteArray)
 }
+
 // swiftlint:enable function_body_length

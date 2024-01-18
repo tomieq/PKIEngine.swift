@@ -8,10 +8,9 @@
 import Foundation
 
 enum SelfSignedConfig {
-    
     static func with(info: CertificateInfo, writeTo configFilename: String) {
         var config = "HOME = ."
-        
+
         func add(_ txt: String) {
             config.append("\n\(txt)")
         }
@@ -28,7 +27,7 @@ enum SelfSignedConfig {
         add("distinguished_name = req_distinguished_name")
         // The extensions to add to a certificate request
         add("x509_extensions = v3_extensions")
-        
+
         // Leave as long names as it helps documentation
         add("[ req_distinguished_name ]")
         // Leave as long names as it helps documentation
@@ -47,10 +46,10 @@ enum SelfSignedConfig {
         if let organizationalUnitName = info.organizationalUnitName {
             add("organizationalUnitName = \(organizationalUnitName)") // OU
         }
-        //add("organizationalUnitName = SmartCode Certificate Authority") // OU
+        // add("organizationalUnitName = SmartCode Certificate Authority") // OU
         add("commonName = \(info.commonName)") // CN
-        //add("emailAddress = admin@smartcode.com")
-        
+        // add("emailAddress = admin@smartcode.com")
+
         // extensions section
         add("[ v3_extensions ]")
         // basic constraints extension tells whether certificate can be used to sign othet certificates
@@ -64,10 +63,10 @@ enum SelfSignedConfig {
         // The defined values are: digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment, keyAgreement,
         // keyCertSign, cRLSign, encipherOnly, and decipherOnly.
         add("keyUsage = critical, keyCertSign, cRLSign")
-        
+
         // put in the X509 the issuer's keyID and name - always, ever for self-signed certificate
         add("authorityKeyIdentifier = keyid, issuer:always")
-        
+
         do {
             try config.write(toFile: configFilename, atomically: false, encoding: .utf8)
         } catch {

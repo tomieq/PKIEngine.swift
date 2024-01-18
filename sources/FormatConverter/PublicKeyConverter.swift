@@ -9,11 +9,11 @@ import Foundation
 
 class PublicKeyConverter {
     let publicKeyFilename: String
-    
+
     init(publicKeyFilename: String) {
         self.publicKeyFilename = publicKeyFilename
     }
-    
+
     var isPEM: Bool {
         let beginPemBlock = "-----BEGIN PUBLIC KEY-----"
         if let data = try? Data(contentsOf: URL(fileURLWithPath: publicKeyFilename)),
@@ -26,24 +26,24 @@ class PublicKeyConverter {
     func saveAs(derFilename: String) {
         let shell = Shell()
         shell.exec("rm \(derFilename)")
-        Logger.v("Converting PEM file: \(publicKeyFilename) to DER file: \(derFilename)")
-        guard isPEM else {
-            Logger.v("File \(publicKeyFilename) is already a DER file! Just copying the file...")
-            shell.exec("cp \(publicKeyFilename) \(derFilename)")
+        Logger.v("Converting PEM file: \(self.publicKeyFilename) to DER file: \(derFilename)")
+        guard self.isPEM else {
+            Logger.v("File \(self.publicKeyFilename) is already a DER file! Just copying the file...")
+            shell.exec("cp \(self.publicKeyFilename) \(derFilename)")
             return
         }
-        shell.exec("openssl rsa -pubin -in \(publicKeyFilename) -inform PEM -outform DER -out \(derFilename)")
+        shell.exec("openssl rsa -pubin -in \(self.publicKeyFilename) -inform PEM -outform DER -out \(derFilename)")
     }
 
     func saveAs(pemFilename: String) {
         let shell = Shell()
         shell.exec("rm \(pemFilename)")
-        Logger.v("Converting DER file: \(publicKeyFilename) to PEM file: \(pemFilename)")
-        guard !isPEM else {
-            Logger.v("File \(publicKeyFilename) is already a PEM file! Just copying the file...")
-            shell.exec("cp \(publicKeyFilename) \(pemFilename)")
+        Logger.v("Converting DER file: \(self.publicKeyFilename) to PEM file: \(pemFilename)")
+        guard !self.isPEM else {
+            Logger.v("File \(self.publicKeyFilename) is already a PEM file! Just copying the file...")
+            shell.exec("cp \(self.publicKeyFilename) \(pemFilename)")
             return
         }
-        shell.exec("openssl rsa -pubin -in \(publicKeyFilename) -inform DER -outform PEM -out \(pemFilename)")
+        shell.exec("openssl rsa -pubin -in \(self.publicKeyFilename) -inform DER -outform PEM -out \(pemFilename)")
     }
 }

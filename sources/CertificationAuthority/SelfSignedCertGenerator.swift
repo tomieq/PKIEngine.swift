@@ -8,7 +8,6 @@
 import Foundation
 
 enum SelfSignedCertGenerator {
-    
     // provide existing private key file and output cert file name to be created
     static func generate(using info: CertificateInfo,
                          privateKeyFilename: String,
@@ -24,6 +23,5 @@ enum SelfSignedCertGenerator {
         try? FileManager.default.removeItem(atPath: configFilename)
         // to preview generated x509 certificate, call:
         // openssl x509 -in ca.pem -noout -text
-        
     }
 }

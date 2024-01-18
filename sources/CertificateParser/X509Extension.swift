@@ -8,7 +8,6 @@
 import Foundation
 
 public class X509Extension {
-
     let block: ASN1Object
 
     required init(block: ASN1Object) {
@@ -16,34 +15,34 @@ public class X509Extension {
     }
 
     public var oid: String? {
-        return block.sub(0)?.value as? String
+        return self.block.child(0)?.value as? String
     }
 
     public var name: String? {
-        return OID.description(of: oid ?? "")
+        return OID.description(of: self.oid ?? "")
     }
 
     public var isCritical: Bool {
-        if block.sub?.count ?? 0 > 2 {
-            return block.sub(1)?.value as? Bool ?? false
+        if self.block.children?.count ?? 0 > 2 {
+            return self.block.child(1)?.value as? Bool ?? false
         }
         return false
     }
 
     public var value: Any? {
-        if let valueBlock = block.sub?.last {
-            return firstLeafValue(block: valueBlock)
+        if let valueBlock = block.children?.last {
+            return firstLeafValue(in: valueBlock)
         }
         return nil
     }
 
     var valueAsBlock: ASN1Object? {
-        return block.sub?.last
+        return self.block.children?.last
     }
 
     var valueAsStrings: [String] {
         var result: [String] = []
-        for item in block.sub?.last?.sub?.last?.sub ?? [] {
+        for item in self.block.children?.last?.children?.last?.children ?? [] {
             if let name = item.value as? String {
                 result.append(name)
             }

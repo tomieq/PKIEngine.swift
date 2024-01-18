@@ -8,8 +8,7 @@
 import Foundation
 
 enum KeyPairGenerator {
-    
-    static func generate(privateKeyFilename: String, 
+    static func generate(privateKeyFilename: String,
                          publicKeyFilename: String,
                          publicKeyFormat: CertificateFormat) {
         let shell = Shell()

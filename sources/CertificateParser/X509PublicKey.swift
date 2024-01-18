@@ -8,7 +8,6 @@
 import Foundation
 
 public class X509PublicKey {
-
     let pkBlock: ASN1Object
 
     init(pkBlock: ASN1Object) {
@@ -16,27 +15,27 @@ public class X509PublicKey {
     }
 
     public var algOid: String? {
-        return pkBlock.sub(0)?.sub(0)?.value as? String
+        return self.pkBlock.child(0)?.child(0)?.value as? String
     }
 
     public var algName: String? {
-        return OID.description(of: algOid ?? "")
+        return OID.description(of: self.algOid ?? "")
     }
 
     public var algParams: String? {
-        return pkBlock.sub(0)?.sub(1)?.value as? String
+        return self.pkBlock.child(0)?.child(1)?.value as? String
     }
-    
+
     public var derEncodedKey: Data? {
-        return pkBlock.rawValue?.derEncodedSequence
+        return self.pkBlock.rawValue?.derEncodedSequence
     }
 
     public var key: Data? {
         guard
             let algOid = algOid,
             let oid = OID(rawValue: algOid),
-            let keyData = pkBlock.sub(1)?.value as? Data else {
-                return nil
+            let keyData = pkBlock.child(1)?.value as? Data else {
+            return nil
         }
 
         switch oid {
@@ -47,7 +46,7 @@ public class X509PublicKey {
             guard let publicKeyAsn1Objects = (try? ASN1DERDecoder.decode(data: keyData)) else {
                 return nil
             }
-            guard let publicKeyModulus = publicKeyAsn1Objects.first?.sub(0)?.value as? Data else {
+            guard let publicKeyModulus = publicKeyAsn1Objects.first?.child(0)?.value as? Data else {
                 return nil
             }
             return publicKeyModulus

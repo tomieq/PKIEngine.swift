@@ -8,7 +8,6 @@
 import Foundation
 
 extension X509Extension {
-    
     // Used for SubjectAltName and IssuerAltName
     // Every name can be one of these subtype:
     //  - otherName      [0] INSTANCE OF OTHER-NAME,
@@ -25,7 +24,7 @@ extension X509Extension {
     //
     var alternativeNameAsStrings: [String] {
         var result: [String] = []
-        for item in block.sub?.last?.sub?.last?.sub ?? [] {
+        for item in block.children?.last?.children?.last?.children ?? [] {
             guard let name = generalName(of: item) else {
                 continue
             }
@@ -33,14 +32,14 @@ extension X509Extension {
         }
         return result
     }
-    
+
     func generalName(of item: ASN1Object) -> String? {
-        guard let nameType = item.identifier?.tagNumber().rawValue else {
+        guard let nameType = item.type?.tag.rawValue else {
             return nil
         }
         switch nameType {
         case 0:
-            if let name = item.sub?.last?.sub?.last?.value as? String {
+            if let name = item.children?.last?.children?.last?.value as? String {
                 return name
             }
         case 1, 2, 6:
@@ -48,7 +47,7 @@ extension X509Extension {
                 return name
             }
         case 4:
-            if let sequence = item.sub(0) {
+            if let sequence = item.child(0) {
                 return ASN1DistinguishedNameFormatter.string(from: sequence)
             }
         case 7:

@@ -9,7 +9,6 @@ import Foundation
 
 // Elliptic Curve Cryptography (ECC)
 enum ECCKeyPairGenerator {
-    
     static func generate(privateKeyFilename: String,
                          publicKeyFilename: String,
                          publicKeyFormat: CertificateFormat) {

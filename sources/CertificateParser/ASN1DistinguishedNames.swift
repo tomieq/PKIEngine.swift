@@ -8,19 +8,18 @@
 import Foundation
 
 public class ASN1DistinguishedNameFormatter {
-    
     public static var separator = ", "
 
     // Format subject/issuer information in RFC1779
     class func string(from block: ASN1Object) -> String? {
         var result: String?
-        for sub in block.sub ?? [] {
-            if let subOid = sub.sub(0)?.sub(0), subOid.identifier?.tagNumber() == .objectIdentifier,
-               let oidString = subOid.value as? String, let value = sub.sub(0)?.sub(1)?.value as? String {
+        for sub in block.children ?? [] {
+            if let subOid = sub.child(0)?.child(0), subOid.type?.tag == .objectIdentifier,
+               let oidString = subOid.value as? String, let value = sub.child(0)?.child(1)?.value as? String {
                 if result == nil {
                     result = ""
                 } else {
-                    result?.append(separator)
+                    result?.append(self.separator)
                 }
                 if let oid = OID(rawValue: oidString) {
                     if let representation = shortRepresentation(oid: oid) {
@@ -32,12 +31,12 @@ public class ASN1DistinguishedNameFormatter {
                     result?.append(oidString)
                 }
                 result?.append("=")
-                result?.append(quote(string: value))
+                result?.append(self.quote(string: value))
             }
         }
         return result
     }
-    
+
     class func quote(string: String) -> String {
         let specialChar = ",+=\n<>#;\\"
         if string.contains(where: { specialChar.contains($0) }) {
@@ -46,7 +45,7 @@ public class ASN1DistinguishedNameFormatter {
             return string
         }
     }
-    
+
     class func shortRepresentation(oid: OID) -> String? {
         switch oid {
         case .commonName: return "CN"
@@ -69,4 +68,3 @@ public class ASN1DistinguishedNameFormatter {
         }
     }
 }
-

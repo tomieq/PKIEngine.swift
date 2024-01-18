@@ -9,7 +9,7 @@ import Foundation
 
 class CertificateConverter {
     let certFilename: String
-    
+
     init(certFilename: String) {
         self.certFilename = certFilename
     }
@@ -26,24 +26,24 @@ class CertificateConverter {
     func saveAs(derFilename: String) {
         let shell = Shell()
         shell.exec("rm \(derFilename)")
-        Logger.v("Converting PEM file: \(certFilename) to DER file: \(derFilename)")
-        guard isPEM else {
-            Logger.v("File \(certFilename) is already a DER file! Just copying the file...")
-            shell.exec("cp \(certFilename) \(derFilename)")
+        Logger.v("Converting PEM file: \(self.certFilename) to DER file: \(derFilename)")
+        guard self.isPEM else {
+            Logger.v("File \(self.certFilename) is already a DER file! Just copying the file...")
+            shell.exec("cp \(self.certFilename) \(derFilename)")
             return
         }
-        shell.exec("openssl x509 -in \(certFilename) -outform DER -out \(derFilename)")
+        shell.exec("openssl x509 -in \(self.certFilename) -outform DER -out \(derFilename)")
     }
 
     func saveAs(pemFilename: String) {
         let shell = Shell()
         shell.exec("rm \(pemFilename)")
-        Logger.v("Converting DER file: \(certFilename) to PEM file: \(pemFilename)")
-        guard !isPEM else {
-            Logger.v("File \(certFilename) is already a PEM file! Just copying the file...")
-            shell.exec("cp \(certFilename) \(pemFilename)")
+        Logger.v("Converting DER file: \(self.certFilename) to PEM file: \(pemFilename)")
+        guard !self.isPEM else {
+            Logger.v("File \(self.certFilename) is already a PEM file! Just copying the file...")
+            shell.exec("cp \(self.certFilename) \(pemFilename)")
             return
         }
-        shell.exec("openssl x509 -in \(certFilename) -outform PEM -out \(pemFilename)")
+        shell.exec("openssl x509 -in \(self.certFilename) -outform PEM -out \(pemFilename)")
     }
 }

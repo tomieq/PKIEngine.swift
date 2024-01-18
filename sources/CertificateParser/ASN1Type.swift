@@ -7,8 +7,7 @@
 
 import Foundation
 
-public class ASN1Identifier: CustomStringConvertible {
-
+public class ASN1Type: CustomStringConvertible {
     public enum Class: UInt8 {
         case universal = 0x00
         case application = 0x40
@@ -16,7 +15,7 @@ public class ASN1Identifier: CustomStringConvertible {
         case `private` = 0xC0
     }
 
-    public enum TagNumber: UInt8 {
+    public enum Tag: UInt8 {
         case endOfContent = 0x00
         case boolean = 0x01
         case integer = 0x02
@@ -47,7 +46,7 @@ public class ASN1Identifier: CustomStringConvertible {
         case characterString = 0x1D
         case bmpString = 0x1E
     }
-    
+
     public static let constructedTag: UInt8 = 0x20
 
     var rawValue: UInt8
@@ -57,28 +56,29 @@ public class ASN1Identifier: CustomStringConvertible {
     }
 
     public func typeClass() -> Class {
-        for tc in [Class.application, Class.contextSpecific, Class.private] where (rawValue & tc.rawValue) == tc.rawValue {
+        for tc in [Class.application, Class.contextSpecific, Class.private] where (self.rawValue & tc.rawValue) == tc.rawValue {
             return tc
         }
         return .universal
     }
 
     public func isPrimitive() -> Bool {
-        return (rawValue & ASN1Identifier.constructedTag) == 0
-    }
-    public func isConstructed() -> Bool {
-        return (rawValue & ASN1Identifier.constructedTag) != 0
+        return (self.rawValue & ASN1Type.constructedTag) == 0
     }
 
-    public func tagNumber() -> TagNumber {
-        return TagNumber(rawValue: rawValue & 0x1F) ?? .endOfContent
+    public func isConstructed() -> Bool {
+        return (self.rawValue & ASN1Type.constructedTag) != 0
+    }
+
+    public var tag: Tag {
+        return Tag(rawValue: self.rawValue & 0x1F) ?? .endOfContent
     }
 
     public var description: String {
-        if typeClass() == .universal {
-            return String(describing: tagNumber())
+        if self.typeClass() == .universal {
+            return String(describing: self.tag)
         } else {
-            return "\(typeClass())(\(tagNumber().rawValue))"
+            return "\(self.typeClass())(\(self.tag.rawValue))"
         }
     }
 }

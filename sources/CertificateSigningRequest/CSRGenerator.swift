@@ -15,10 +15,10 @@ enum CSRGenerator {
                          csrOutput: String) {
         Logger.v("Generating Certificate Signing Request(\(csrOutput))...")
         let shell = Shell()
-        
+
         let configFilename = "csr.".appendingRandomHexDigits(length: 12) + ".config"
         CSRConfig.with(info: info, type: type, writeTo: configFilename)
-        
+
         let output = shell.exec("openssl req -new -key \(privateKeyFilename) -out \(csrOutput) -config \(configFilename)")
         Logger.v(output)
         try? FileManager.default.removeItem(atPath: configFilename)

@@ -15,7 +15,7 @@ struct CertificateInfo {
     let organizationalUnitName: String?
     let commonName: String
     let alternativeNames: [String]
-    
+
     init(countryName: String? = nil,
          stateOrProvinceName: String? = nil,
          localityName: String? = nil,
