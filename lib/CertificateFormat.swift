@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum CertificateFormat {
+public enum CertificateFormat {
     case pem
     case der
 }

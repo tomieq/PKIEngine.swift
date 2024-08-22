@@ -1,5 +1,5 @@
 //
-//  Logger.swift
+//  PKILogger.swift
 //
 //
 //  Created by Tomasz on 15/01/2024.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum Logger {
+enum PKILogger {
     static func v(_ txt: String) {
         print(txt)
     }

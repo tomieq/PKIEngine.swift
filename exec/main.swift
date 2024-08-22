@@ -1,7 +1,8 @@
 import Foundation
+import PKI
 
 let pwd = FileManager.default.currentDirectoryPath
-Logger.v("Running in \(pwd)")
+//Logger.v("Running in \(pwd)")
 
 
 // ------ Self-signed root
@@ -24,9 +25,10 @@ let rootInfo = CertificateInfo(countryName: "PL",
 SelfSignedCertGenerator.generate(using: rootInfo,
                                  privateKeyFilename: rootPrivateKey,
                                  x509Output: rootCertFile,
-                                 outputFormat: .pem)
+                                 outputFormat: .pem,
+                                 expiration: .years(10))
 
-Logger.v("CA x509 file: \(pwd)/\(rootCertFile)")
+//Logger.v("CA x509 file: \(pwd)/\(rootCertFile)")
 
 // intermediate cert
 let intermediatePrivateKey = "intermediate.priv.key"
@@ -60,7 +62,8 @@ let rootAuthority = CertificateAuthority(caPrivateKeyFilename: rootPrivateKey,
 // create intermediate x509 certificate
 rootAuthority.processCSRAddingExtensions(csrFilename: intermediateCSRFile,
                                          x509Output: intermediateCertFile,
-                                         outputFormat: .pem)
+                                         outputFormat: .pem,
+                                         expiration: .years(10))
 
 
 // ------ end user cert
@@ -94,7 +97,8 @@ let intermediateAuthority = CertificateAuthority(caPrivateKeyFilename: intermedi
                                                  caX509Filename: intermediateCertFile)
 intermediateAuthority.processCSRAddingExtensions(csrFilename: userCSRFile,
                                                  x509Output: userCertFile,
-                                                 outputFormat: .pem)
+                                                 outputFormat: .pem,
+                                                 expiration: .years(1))
 
 
 print("\(X509Certificate(path: rootCertFile)?.prettyPrint ?? "")")

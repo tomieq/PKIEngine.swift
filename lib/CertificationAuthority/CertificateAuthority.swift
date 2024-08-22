@@ -7,18 +7,18 @@
 
 import Foundation
 
-class CertificateAuthority {
+public class CertificateAuthority {
     let caPrivateKeyFilename: String
     let caX509Filename: String // might be self-signed
 
-    init(caPrivateKeyFilename: String, caX509Filename: String) {
+    public init(caPrivateKeyFilename: String, caX509Filename: String) {
         self.caPrivateKeyFilename = caPrivateKeyFilename
         self.caX509Filename = caX509Filename
     }
 
     // sign certificate without any extensions
     // process Certificate Signing Request
-    func processCSR(csrFilename: String,
+    public  func processCSR(csrFilename: String,
                     x509Output: String,
                     outputFormat format: CertificateFormat,
                     expiration: CertificateExpiration) {
@@ -32,7 +32,7 @@ class CertificateAuthority {
 
     // sign certificate without any extensions
     // process Certificate Signing Request
-    func processCSRAddingExtensions(csrFilename: String,
+    public func processCSRAddingExtensions(csrFilename: String,
                                     x509Output: String,
                                     outputFormat format: CertificateFormat,
                                     expiration: CertificateExpiration) {

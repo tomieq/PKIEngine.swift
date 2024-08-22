@@ -38,7 +38,7 @@ public class X509Certificate: CustomStringConvertible {
             let data = try Data(contentsOf: URL(fileURLWithPath: path))
             try self.init(data: data)
         } catch {
-            Logger.v("Could not init from path: \(path) - \(error)")
+            PKILogger.v("Could not init from path: \(path) - \(error)")
             return nil
         }
     }

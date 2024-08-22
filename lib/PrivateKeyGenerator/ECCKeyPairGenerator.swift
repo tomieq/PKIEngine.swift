@@ -8,12 +8,12 @@
 import Foundation
 
 // Elliptic Curve Cryptography (ECC)
-enum ECCKeyPairGenerator {
-    static func generate(privateKeyFilename: String,
+public enum ECCKeyPairGenerator {
+    public static func generate(privateKeyFilename: String,
                          publicKeyFilename: String,
                          publicKeyFormat: CertificateFormat) {
         let shell = Shell()
-        Logger.v("Generating elliptic curve private(\(privateKeyFilename)) and public key(\(publicKeyFilename))...")
+        PKILogger.v("Generating elliptic curve private(\(privateKeyFilename)) and public key(\(publicKeyFilename))...")
         shell.exec("openssl ecparam -name prime256v1 -genkey -noout -out \(privateKeyFilename)")
         shell.exec("openssl ec -in \(privateKeyFilename) -pubout -out \(publicKeyFilename) \(publicKeyFormat.opensslArg)")
     }

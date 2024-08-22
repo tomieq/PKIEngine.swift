@@ -70,7 +70,7 @@ enum SelfSignedConfig {
         do {
             try config.write(toFile: configFilename, atomically: false, encoding: .utf8)
         } catch {
-            Logger.v("Problem saving self signed config to file \(configFilename): \(error)")
+            PKILogger.v("Problem saving self signed config to file \(configFilename): \(error)")
         }
     }
 }

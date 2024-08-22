@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum CSRType {
+public enum CSRType {
     case intermediate
     case endUser
 }
@@ -117,7 +117,7 @@ enum CSRConfig {
         do {
             try config.write(toFile: configFilename, atomically: false, encoding: .utf8)
         } catch {
-            Logger.v("Problem writing to CSR file at \(configFilename): \(error)")
+            PKILogger.v("Problem writing to CSR file at \(configFilename): \(error)")
         }
     }
 }

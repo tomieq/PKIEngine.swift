@@ -8,7 +8,7 @@
 import Foundation
 
 extension X509Certificate {
-    var prettyPrint: String {
+    public var prettyPrint: String {
         func add(_ label: String, _ txt: CustomStringConvertible?) {
             guard let txt = txt else { return }
             output.append("\n\(label)\n\t\(txt)")

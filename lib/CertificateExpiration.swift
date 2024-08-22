@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum CertificateExpiration {
+public enum CertificateExpiration {
     case days(Int)
     case months(Int)
     case years(Int)
